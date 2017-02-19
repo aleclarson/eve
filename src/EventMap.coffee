@@ -1,7 +1,6 @@
 
 assertType = require "assertType"
 isType = require "isType"
-isDev = require "isDev"
 Type = require "Type"
 sync = require "sync"
 
@@ -11,13 +10,26 @@ Event = require "./Event"
 
 type = Type "EventMap"
 
-type.defineValues ->
+type.defineArgs
+  only: Array.Maybe
+
+type.defineValues (options) ->
 
   _map: Object.create null
+
+  _strict: options.only?
+
+  _eventIds: new Set options.only
 
 type.defineMethods
 
   emit: (id, data) ->
+
+    if not @_strict
+      @_eventIds.add id
+    else if not @_eventIds.has id
+      throw Error "Unsupported event: '#{id}'"
+
     if listeners = @_map[id]
       listeners.notify data
     return
@@ -44,6 +56,9 @@ type.defineMethods
 
   _attach: (id, listener) ->
     assertType id, String
+
+    if @_strict and not @_eventIds.has id
+      throw Error "Unsupported event: '#{id}'"
 
     unless listeners = @_map[id]
       @_map[id] = listeners = ListenerArray()
