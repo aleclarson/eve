@@ -1,9 +1,9 @@
 
 assertType = require "assertType"
 isType = require "isType"
+isDev = require "isDev"
 Type = require "Type"
 sync = require "sync"
-has = require "has"
 
 ListenerArray = require "./ListenerArray"
 Listener = require "./Listener"
