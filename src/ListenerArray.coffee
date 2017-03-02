@@ -46,7 +46,7 @@ type.defineMethods
     else @_update listener, 1
 
     @_onAttach listener
-    return
+    return listener
 
   notify: (data) ->
 

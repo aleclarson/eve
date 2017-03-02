@@ -71,8 +71,7 @@ type.defineMethods
         onAttach: @_onAttach.bind this
 
     listener = Listener callback, @_onDetach
-    listeners.attach listener
-    return listener
+    return listeners.attach listener
 
   _onAttach: (listener) ->
     Event.didAttach.emit listener, this
