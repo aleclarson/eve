@@ -1,4 +1,5 @@
 
+emptyFunction = require "emptyFunction"
 assertType = require "assertType"
 isType = require "isType"
 Type = require "Type"
@@ -12,10 +13,13 @@ type = Type "EventMap"
 
 type.defineArgs
   only: Array.Maybe
+  async: Boolean.Maybe
 
 type.defineValues (options) ->
 
   _map: Object.create null
+
+  _async: options.async
 
   _strict: options.only?
 
@@ -45,25 +49,34 @@ type.defineMethods
       Event {id, types, _events: this}
 
   on: (id, callback) ->
-    @_attach id, Listener callback
+    assertType id, String
+    assertType callback, Function
+    @_attach id, callback
 
   once: (id, callback) ->
     assertType id, String
     assertType callback, Function
-    @_attach id, Listener (data) ->
+    @_attach id, (data) ->
       @detach()
       callback.call this, data
 
-  _attach: (id, listener) ->
-    assertType id, String
+  _attach: (id, callback) ->
 
     if @_strict and not @_eventIds.has id
       throw Error "Unsupported event: '#{id}'"
 
     unless listeners = @_map[id]
-      @_map[id] = listeners = ListenerArray()
+      @_map[id] = listeners = ListenerArray
+        async: @_async
+        onAttach: @_onAttach.bind this
 
+    listener = Listener callback, @_onDetach
     listeners.attach listener
     return listener
+
+  _onAttach: (listener) ->
+    Event.didAttach.emit listener, this
+
+  _onDetach: emptyFunction
 
 module.exports = type.build()
