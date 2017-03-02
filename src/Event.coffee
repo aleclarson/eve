@@ -34,6 +34,12 @@ type.defineValues (options = {}) ->
 
 type.defineMethods
 
+  bindEmit: ->
+    @_boundEmit or @_bindEmit()
+
+  applyEmit: (args) ->
+    @emit.apply this, args
+
   emit: (data) ->
 
     if isDev and @types
@@ -71,6 +77,10 @@ type.defineMethods
     Event.didAttach.emit listener, this
 
   _onDetach: emptyFunction
+
+  _bindEmit: ->
+    frozen.define this, "_boundEmit", {value: @emit.bind this}
+    return @_boundEmit
 
 type.defineStatics
 
