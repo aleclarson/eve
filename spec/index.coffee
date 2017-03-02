@@ -43,6 +43,18 @@ describe "Event", ->
     expect -> event.emit {foo: 1}
       .not.toThrow()
 
+  it "provides its '_onDetach' method to every Listener", ->
+
+    event = Event()
+    event._onDetach = spy = jasmine.createSpy()
+
+    l1 = event.once ->
+    l2 = event.once ->
+
+    event.emit()
+    expect spy.calls.count()
+      .toBe 2
+
   describe "Event.getListeners", ->
 
     it "returns an array of listeners attached inside your callback", ->
@@ -132,6 +144,18 @@ describe "Event.Map", ->
     events.emit "foo", 2
     expect spy.calls.argsFor 1
       .toEqual []
+
+  it "provides its '_onDetach' method to every Listener", ->
+
+    events = EventMap()
+    events._onDetach = spy = jasmine.createSpy()
+
+    l1 = events.once "foo", ->
+    l2 = events.once "foo", ->
+
+    events.emit "foo"
+    expect spy.calls.count()
+      .toBe 2
 
 describe "Event.Listener", ->
 

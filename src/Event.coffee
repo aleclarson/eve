@@ -3,6 +3,7 @@ require "LazyVar"
 
 {frozen} = require "Property"
 
+emptyFunction = require "emptyFunction"
 assertTypes = require "assertTypes"
 isDev = require "isDev"
 Type = require "Type"
@@ -15,10 +16,13 @@ type = Type "Event"
 type.defineArgs
   id: String.Maybe
   types: Object.Maybe
+  async: Boolean.Maybe
 
 type.defineFrozenValues (options) ->
 
   id: options.id
+
+  _async: options.async
 
 type.defineValues (options = {}) ->
 
@@ -29,6 +33,12 @@ type.defineValues (options = {}) ->
   _listeners: null unless options._events
 
 type.defineMethods
+
+  bindEmit: ->
+    @_boundEmit or @_bindEmit()
+
+  applyEmit: (args) ->
+    @emit.apply this, args
 
   emit: (data) ->
 
@@ -44,27 +54,33 @@ type.defineMethods
   on: (callback) ->
     if @_events
     then @_events.on @id, callback
-    else @_on callback
+    else @_attach callback
 
   once: (callback) ->
     if @_events
     then @_events.once @id, callback
-    else @_on (data) ->
+    else @_attach (data) ->
       callback.call this, data
       @detach()
 
-  _on: (callback) ->
+  _attach: (callback) ->
 
     unless @_listeners
       @_listeners = ListenerArray
+        async: @_async
         onAttach: @_onAttach.bind this
 
-    listener = Listener callback
-    @_listeners.attach listener
-    return listener
+    listener = Listener callback, @_onDetach
+    return @_listeners.attach listener
 
   _onAttach: (listener) ->
     Event.didAttach.emit listener, this
+
+  _onDetach: emptyFunction
+
+  _bindEmit: ->
+    frozen.define this, "_boundEmit", {value: @emit.bind this}
+    return @_boundEmit
 
 type.defineStatics
 

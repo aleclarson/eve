@@ -8,14 +8,9 @@ Listener = require "./Listener"
 
 type = Type "ListenerArray"
 
-type.defineArgs ->
-
-  types:
-    async: Boolean
-    onAttach: Function
-
-  defaults:
-    onAttach: emptyFunction
+type.defineArgs
+  async: Boolean.Maybe
+  onAttach: Function.Maybe
 
 type.defineValues (options) ->
 
@@ -25,7 +20,7 @@ type.defineValues (options) ->
 
   _isNotifying: no
 
-  _onAttach: options.onAttach
+  _onAttach: options.onAttach or emptyFunction
 
   _detached: []
 
@@ -51,7 +46,7 @@ type.defineMethods
     else @_update listener, 1
 
     @_onAttach listener
-    return
+    return listener
 
   notify: (data) ->
 
@@ -102,7 +97,8 @@ type.defineMethods
     oldValue.splice index, 1
     newCount = oldValue.length
 
-    if newCount is 1 then @_update oldValue[0], 1
+    if newCount is 1
+    then @_update oldValue[0], 1
     else @_update oldValue, newCount
     return
 
