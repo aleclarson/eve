@@ -7,7 +7,8 @@ Event = require "./Event"
 
 Type.extend "defineEvents", (events) ->
   @initInstance ->
+    ctr = @constructor.name
     for key, types of events
-      options = if types then {types} else undefined
-      frozen.define this, key, value: Event options
+      frozen.define this, key,
+        value: Event {id: ctr + "." + key, types}
     return
