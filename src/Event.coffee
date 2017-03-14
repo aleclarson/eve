@@ -32,6 +32,11 @@ type.defineValues (options = {}) ->
 
   _listeners: null unless options._events
 
+type.defineFunction (callback) ->
+  if @_events
+  then @_events.on @id, callback
+  else @_attach callback
+
 type.defineMethods
 
   bindEmit: ->
@@ -46,22 +51,17 @@ type.defineMethods
       assertTypes data, @types
 
     if @_events
-      return @_events.emit @id, data
+      return @_events.applyEmit @id, arguments
 
     if @_listeners
-      return @_listeners.notify data
-
-  on: (callback) ->
-    if @_events
-    then @_events.on @id, callback
-    else @_attach callback
+      return @_listeners.notify arguments
 
   once: (callback) ->
     if @_events
     then @_events.once @id, callback
-    else @_attach (data) ->
-      callback.call this, data
+    else @_attach ->
       @detach()
+      callback.apply this, arguments
 
   _attach: (callback) ->
 

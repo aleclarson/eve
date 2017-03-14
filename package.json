@@ -1,6 +1,6 @@
 {
   "name": "eve",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "main": "js/Event",
   "plugins": [
     "lotus-coffee"
@@ -19,6 +19,7 @@
     "immediate": "aleclarson/immediate#4.1.1",
     "isDev": "aleclarson/isDev#2.0.0",
     "isType": "aleclarson/isType#1.0.1",
+    "sliceArray": "aleclarson/sliceArray#1.0.0",
     "sync": "aleclarson/sync#1.0.2"
   }
 }

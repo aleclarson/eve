@@ -48,7 +48,7 @@ type.defineMethods
     @_onAttach listener
     return listener
 
-  notify: (data) ->
+  notify: (args) ->
 
     # Don't notify (or push to queue) if no listeners are attached.
     return unless @_value
@@ -56,18 +56,18 @@ type.defineMethods
     # Perform synchronous emits.
     unless @_queue
       @_isNotifying = yes
-      @_notify data
+      @_notify args
       @_isNotifying = no
       @_flush()
       return
 
     # Push to queue if async emit is active.
     if @_isNotifying or @_queue.length
-      @_queue.push data
+      @_queue.push args
       return
 
     # Emit immediately after the JS event loop ticks.
-    @_notifyAsync data
+    @_notifyAsync args
     return
 
   detach: (listener) ->
@@ -111,20 +111,20 @@ type.defineMethods
     @_length = newLength
     return
 
-  _notify: (data) ->
+  _notify: (args) ->
     if @_length is 1
-    then @_value.notify data
+    then @_value.notify args
     else @_value.forEach (listener) ->
-      listener.notify data
+      listener.notify args
 
-  _notifyAsync: (data) ->
+  _notifyAsync: (args) ->
     @_isNotifying = yes
     immediate this, ->
-      @_value and @_notify data
+      @_value and @_notify args
       @_isNotifying = no
       @_flush()
-      if data = @_queue.shift()
-        @_notifyAsync data
+      if args = @_queue.shift()
+        @_notifyAsync args
       return
     return
 

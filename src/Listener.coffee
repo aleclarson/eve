@@ -20,9 +20,11 @@ type.defineGetters
 
   isListening: -> @_notify isnt null
 
-  notify: -> @_notify or emptyFunction
-
 type.defineMethods
+
+  notify: (args) ->
+    @_notify?.apply this, args
+    return
 
   detach: ->
 
