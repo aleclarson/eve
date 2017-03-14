@@ -51,17 +51,17 @@ type.defineMethods
       assertTypes data, @types
 
     if @_events
-      return @_events.emit @id, data
+      return @_events.applyEmit @id, arguments
 
     if @_listeners
-      return @_listeners.notify data
+      return @_listeners.notify arguments
 
   once: (callback) ->
     if @_events
     then @_events.once @id, callback
-    else @_attach (data) ->
-      callback.call this, data
+    else @_attach ->
       @detach()
+      callback.apply this, arguments
 
   _attach: (callback) ->
 

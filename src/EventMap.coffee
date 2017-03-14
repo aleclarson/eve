@@ -1,6 +1,7 @@
 
 emptyFunction = require "emptyFunction"
 assertType = require "assertType"
+sliceArray = require "sliceArray"
 isType = require "isType"
 Type = require "Type"
 sync = require "sync"
@@ -32,15 +33,18 @@ type.defineMethods
   applyEmit: (id, args) ->
     @emit.apply this, [id].concat args
 
-  emit: (id, data) ->
+  emit: (id) ->
 
     if not @_strict
       @_eventIds.add id
+
     else if not @_eventIds.has id
       throw Error "Unsupported event: '#{id}'"
 
+    args = sliceArray arguments, 1
+
     if listeners = @_map[id]
-      listeners.notify data
+      listeners.notify args
 
     @_onEmit.apply null, arguments
     return
@@ -63,9 +67,9 @@ type.defineMethods
   once: (id, callback) ->
     assertType id, String
     assertType callback, Function
-    @_attach id, (data) ->
+    @_attach id, ->
       @detach()
-      callback.call this, data
+      callback.apply this, arguments
 
   _attach: (id, callback) ->
 
