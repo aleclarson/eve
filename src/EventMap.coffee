@@ -29,6 +29,9 @@ type.defineValues (options) ->
 
 type.defineMethods
 
+  applyEmit: (id, args) ->
+    @emit.apply this, [id].concat args
+
   emit: (id, data) ->
 
     if not @_strict
