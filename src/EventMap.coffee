@@ -25,6 +25,8 @@ type.defineValues (options) ->
 
   _eventIds: new Set options.only
 
+  _onEmit: emptyFunction
+
 type.defineMethods
 
   emit: (id, data) ->
@@ -36,6 +38,8 @@ type.defineMethods
 
     if listeners = @_map[id]
       listeners.notify data
+
+    @_onEmit.apply null, arguments
     return
 
   bind: (id, types) ->
