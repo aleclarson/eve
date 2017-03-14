@@ -32,6 +32,11 @@ type.defineValues (options = {}) ->
 
   _listeners: null unless options._events
 
+type.defineFunction (callback) ->
+  if @_events
+  then @_events.on @id, callback
+  else @_attach callback
+
 type.defineMethods
 
   bindEmit: ->
@@ -50,11 +55,6 @@ type.defineMethods
 
     if @_listeners
       return @_listeners.notify data
-
-  on: (callback) ->
-    if @_events
-    then @_events.on @id, callback
-    else @_attach callback
 
   once: (callback) ->
     if @_events
