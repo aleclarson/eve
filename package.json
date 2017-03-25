@@ -1,6 +1,6 @@
 {
   "name": "eve",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "js/Event",
   "plugins": [
     "lotus-coffee"
@@ -16,7 +16,7 @@
     "assertType": "aleclarson/assertType#2.0.1",
     "assertTypes": "aleclarson/assertTypes#2.0.1",
     "emptyFunction": "aleclarson/emptyFunction#1.0.0",
-    "immediate": "aleclarson/immediate#4.1.1",
+    "immediate": "aleclarson/immediate#1.1.0",
     "isDev": "aleclarson/isDev#2.0.0",
     "isType": "aleclarson/isType#1.0.1",
     "sliceArray": "aleclarson/sliceArray#1.0.0",
