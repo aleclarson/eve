@@ -32,6 +32,12 @@ type.defineValues (options = {}) ->
 
   _listeners: null unless options._events
 
+type.defineGetters
+
+  hasListeners: ->
+    listeners = @_listeners or @_events._map[@id]
+    return listeners._length > 0
+
 type.defineFunction (callback) ->
   if @_events
   then @_events.on @id, callback
