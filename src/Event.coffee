@@ -98,7 +98,7 @@ type.defineStatics
 
   getListeners: (callback) ->
     listeners = []
-    onAttach = @didAttach.on (listener) ->
+    onAttach = @didAttach (listener) ->
       listeners.push listener
     callback()
     onAttach.detach()
